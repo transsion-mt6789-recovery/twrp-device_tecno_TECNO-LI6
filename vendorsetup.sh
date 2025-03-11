@@ -20,38 +20,68 @@
 
 #set -o xtrace
 FDEVICE="X6855"
-THIS_DEVICE=${BASH_ARGV[2]}
+
+# Shell compatibility detection
+if [ -n "$ZSH_VERSION" ]; then
+	# Running in ZSH
+	THIS_DEVICE="${@: -1}"
+	SCRIPT_SOURCE="${(%):-%x}"
+	IS_ZSH=1
+elif [ -n "$BASH_VERSION" ]; then
+	# Running in BASH
+	THIS_DEVICE=${BASH_ARGV[2]}
+	SCRIPT_SOURCE="$BASH_SOURCE"
+	IS_ZSH=0
+else
+	echo "ERROR! This script requires bash or zsh."
+	exit 1
+fi
 
 fetch_mt6789_common_repo() {
-	local URL=https://github.com/transsion-mt6789/twrp-device_transsion_mt6789-common.git;
-	local common=device/transsion/mt6789-common;
-
+	local URL=https://github.com/transsion-mt6789/twrp-device_transsion_mt6789-common.git
+	local common=device/transsion/mt6789-common
 	if [ ! -d $common ]; then
-		echo "Cloning $URL ... to $common";
-		git clone $URL -b fox_12.1-tranos15 $common;
+		echo "Cloning $URL ... to $common"
+		git clone $URL -b fox_12.1-tranos15 $common
 	else
 		echo "Device common repository: \"$common\" found ..."
 	fi
 }
 
 fox_get_target_device() {
-local chkdev=$(echo "$BASH_SOURCE" | grep -w \"$FDEVICE\")
-   if [ -n "$chkdev" ]; then 
-      FOX_BUILD_DEVICE="$FDEVICE"
-   else
-      chkdev=$(set | grep BASH_ARGV | grep -w \"$FDEVICE\")
-      [ -n "$chkdev" ] && FOX_BUILD_DEVICE="$FDEVICE"
-   fi
+	if [ "$IS_ZSH" -eq 1 ]; then
+		# ZSH implementation
+		local chkdev=$(echo "$SCRIPT_SOURCE" | grep -w "$FDEVICE")
+		if [ -n "$chkdev" ]; then 
+			FOX_BUILD_DEVICE="$FDEVICE"
+		else
+			chkdev=$(set | grep -E "(argv|@)" | grep -w "$FDEVICE")
+			[ -n "$chkdev" ] && FOX_BUILD_DEVICE="$FDEVICE"
+		fi
+	else
+		# BASH implementation
+		local chkdev=$(echo "$SCRIPT_SOURCE" | grep -w "$FDEVICE")
+		if [ -n "$chkdev" ]; then 
+			FOX_BUILD_DEVICE="$FDEVICE"
+		else
+			chkdev=$(set | grep BASH_ARGV | grep -w "$FDEVICE")
+			[ -n "$chkdev" ] && FOX_BUILD_DEVICE="$FDEVICE"
+		fi
+	fi
 }
 
 if [ -z "$1" -a -z "$FOX_BUILD_DEVICE" ]; then
-   fox_get_target_device
+	fox_get_target_device
 fi
 
 if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 	if [ -z "$THIS_DEVICE" ]; then
-		echo "ERROR! This script requires bash. Run '/bin/bash' and build again."
-		exit 1
+		if [ "$IS_ZSH" -eq 1 ]; then
+			echo "NOTE: Running in ZSH mode"
+		else
+			echo "ERROR! This script couldn't detect the device properly. Make sure you're using bash or zsh."
+			exit 1
+		fi
 	fi
 
 	# Clone to fix build on minimal manifest
@@ -62,14 +92,14 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 	cd bootable/recovery
 	git apply ../../device/infinix/Infinix-X6855/patches/0001-Change-haptics-activation-file-path.patch > /dev/null 2>&1 || RET=$?
 	cd ../../
-	if [ $RET -ne 0 ];then
-	    echo "ERROR: Patch is not applied! Maybe it's already patched?"
+	if [ $RET -ne 0 ]; then
+		echo "ERROR: Patch is not applied! Maybe it's already patched?"
 	else
-	    echo "OK: All patched"
+		echo "OK: All patched"
 	fi
 
 	# mt6789-common
-	fetch_mt6789_common_repo;
+	fetch_mt6789_common_repo
 
 	export FOX_USE_SPECIFIC_MAGISK_ZIP=~/Magisk/Magisk-v28.1.zip
 	export FOX_VIRTUAL_AB_DEVICE=1
@@ -85,10 +115,10 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 	export FOX_USE_XZ_UTILS=1
 	export FOX_USE_ZSTD_BINARY=1
 	export FOX_USE_NANO_EDITOR=1
- 	export FOX_DELETE_AROMAFM=1
+	export FOX_DELETE_AROMAFM=1
 else
-	if [ -z "$FOX_BUILD_DEVICE" -a -z "$BASH_SOURCE" ]; then
-		echo "I: This script requires bash. Not processing the $FDEVICE $(basename $0)"
+	if [ -z "$FOX_BUILD_DEVICE" -a -z "$SCRIPT_SOURCE" ]; then
+		echo "I: This script requires bash or zsh. Not processing the $FDEVICE $(basename $0)"
 	fi
 fi
 #
