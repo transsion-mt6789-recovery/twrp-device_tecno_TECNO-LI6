@@ -158,6 +158,9 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 	# variant
 	export OF_MAINTAINER="rama982"
 	export FOX_VARIANT="A12+"
+
+	# no flashlight
+	export OF_FLASHLIGHT_ENABLE=0
 else
 	if [ -z "$FOX_BUILD_DEVICE" -a -z "$SCRIPT_SOURCE" ]; then
 		echo "I: This script requires bash or zsh. Not processing the $FDEVICE $(basename $0)"
