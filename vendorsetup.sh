@@ -116,6 +116,7 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 	export FOX_USE_ZSTD_BINARY=1
 	export FOX_USE_NANO_EDITOR=1
 	export FOX_DELETE_AROMAFM=1
+	export OF_DEFAULT_KEYMASTER_VERSION=4.1
 else
 	if [ -z "$FOX_BUILD_DEVICE" -a -z "$SCRIPT_SOURCE" ]; then
 		echo "I: This script requires bash or zsh. Not processing the $FDEVICE $(basename $0)"
