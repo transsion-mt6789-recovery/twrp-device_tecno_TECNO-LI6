@@ -161,6 +161,16 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 
 	# no flashlight
 	export OF_FLASHLIGHT_ENABLE=0
+
+        # ccache
+	export USE_CCACHE=1
+	export CCACHE_EXEC=/usr/bin/ccache
+	export CCACHE_MAXSIZE="5G"
+	export CCACHE_DIR=".ccache"
+
+	if [ ! -d ${CCACHE_DIR} ]; then
+		mkdir $CCACHE_DIR
+	fi
 else
 	if [ -z "$FOX_BUILD_DEVICE" -a -z "$SCRIPT_SOURCE" ]; then
 		echo "I: This script requires bash or zsh. Not processing the $FDEVICE $(basename $0)"
