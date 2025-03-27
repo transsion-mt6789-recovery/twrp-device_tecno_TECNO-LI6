@@ -3,7 +3,7 @@ From: Shivelight <shivelight@tuta.io>
 Date: Wed, 13 Sep 2023 08:06:19 +0700
 Subject: [PATCH] Change haptics activation file path
 
-Infinix or perhaps AWINIC Haptic Driver (aw862xx_haptic.ko) is using
+TECNO or perhaps AWINIC Haptic Driver (aw862xx_haptic.ko) is using
 `/sys/class/leds/vibrator_single` instead of `/sys/class/leds/vibrator`.
 
 This is temporary until TWRP allows custom haptics file path

@@ -1,9 +1,9 @@
-## Infinix NOTE 50 Pro 4G (_X6855_)
+## TECNO NOTE 50 Pro 4G (_CM5_)
 ## TWRP / OrangeFox device tree
 
 ## Device specifications
 
-Device                  | Infinix NOTE 50 Pro 4G
+Device                  | TECNO NOTE 50 Pro 4G
 -----------------------:|:-----------------------------------------
 SoC                     | Mediatek Helio G100 Ultimate (6 nm)
 CPU                     | Octa-core (2x2.2 GHz Cortex-A76 & 6x2.0 GHz Cortex-A55)
@@ -18,7 +18,7 @@ Camera                  | 50 MP (wide), 8 MP (ultrawide); 32 MP (front, wide)
 
 ## Device picture
 
-![ Xiaomi Redmi Note 13 Pro 5G / POCO X6 5G ](https://fdn2.gsmarena.com/vv/pics/infinix/infinix-note50-pro-2.jpg "Infinix NOTE 50 Pro 4G")
+![ Xiaomi Redmi Note 13 Pro 5G / POCO X6 5G ](https://fdn2.gsmarena.com/vv/pics/infinix/infinix-note50-pro-2.jpg "TECNO NOTE 50 Pro 4G")
 
 ## Features
 
@@ -39,7 +39,7 @@ Works:
 _Lunch_ command :
 
 ```
-lunch twrp_X6855-eng && mka adbd vendorbootimage
+lunch twrp_CM5-eng && mka adbd vendorbootimage
 ```
 
 ### Copyright
